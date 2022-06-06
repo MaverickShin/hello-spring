@@ -1,39 +1,28 @@
 package hello.hellospring.service;
 
 import hello.hellospring.domain.Member;
+import hello.hellospring.repository.MemberRepository;
 import hello.hellospring.repository.MemoryMemberRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-// 단위테스트
-class MemberServiceTest {
+// 통합테스트
+@SpringBootTest // 스프링 컨테이너와 테스트를 함께 실행한다
+@Transactional // Test Case를 위해 씀, DB에서 테스트에 사용했던 데이터들을 Rollback 해줌
+        // 테스트 케이스에 이 애노테이션이 있으면, 테스트 시작 전에 트랜잭션을 시작하고 테스트 완료 후에 항상 롤백한다.
+        // 이렇게 하면 DB에 데이터가 남지 않으므로 다음 테스트에 영향을 주지 않는다.
+class MemberServiceIntegrationTest {
 
-    // MemberService memberService = new MemberService();
-    MemberService memberService;
-    // MemoryMemberRepository memoryMemberRepository = new MemoryMemberRepository(); // 메모리를 비워주기위해 인스턴스 생성
-    MemoryMemberRepository memoryMemberRepository;
-    // store(MemoryMemberRepository의 데이터가 담긴 Map)가 static이라 인스턴스가 달라도 되지만
-    // static이 아니라면 인스턴스가 다르기 때문에 전혀 다른 데이터가 나온다.
-    // 그렇기 때문에 MemberService에서 MemoryMemberRepository의 인스턴스를 직접 생성하지 말고
-    // 외부에서 인스턴스를 받도록 변경하고, Test 클래스에서는 BeforeEach를 통해 메소드 실행전 인스턴스를 생성하도록 한다.
-    // 이렇게 하면 모든 MemoryMemberRepository의 인스턴스는 같은 인스턴스를 사용하게 된다.
-
-    @BeforeEach
-    public void beforeEach(){
-        memoryMemberRepository = new MemoryMemberRepository();
-        memberService = new MemberService(memoryMemberRepository);
-    }
-
-    @AfterEach
-    public void afterEach() {
-        memoryMemberRepository.clearAll();
-    }
-
+    // 테스트할때는 필드 주입해도 됨
+    @Autowired MemberService memberService;
+    @Autowired MemberRepository memberRepository;
 
     // 테스트는 이름을 과감하게 한글로 해도됨
     @Test
@@ -78,13 +67,5 @@ class MemberServiceTest {
         */
 
         // then
-    }
-
-    @Test
-    void findMembers() {
-    }
-
-    @Test
-    void findOne() {
     }
 }

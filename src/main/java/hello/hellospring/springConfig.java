@@ -1,10 +1,15 @@
 package hello.hellospring;
 
+import hello.hellospring.repository.JdbcMemberRepository;
+import hello.hellospring.repository.JdbcTemplateMemberRepository;
 import hello.hellospring.repository.MemberRepository;
 import hello.hellospring.repository.MemoryMemberRepository;
 import hello.hellospring.service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.sql.DataSource;
 
 // 자바코드로 Bean 등록 하기
 @Configuration
@@ -37,6 +42,13 @@ public class springConfig {
      *     구현체를 넘겨주지 않은 경우에는 객체생성 자체가 불가능하기 때문에 테스트하기도 편하다.
      */
 
+    private DataSource dataSource;
+
+    @Autowired
+    public springConfig(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     // MemberService 클래스에서 @Service가 없어도 됨
     @Bean
     public MemberService memberService() {
@@ -46,6 +58,8 @@ public class springConfig {
     // MemberRepository 클래스에서 @Repository가 없어도 됨
     @Bean
     public MemberRepository memberRepository() {
-        return new MemoryMemberRepository();
+        // return new MemoryMemberRepository();
+        // return new JdbcMemberRepository(dataSource);
+        return new JdbcTemplateMemberRepository(dataSource);
     }
 }
